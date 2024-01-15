@@ -9,6 +9,7 @@ import java.util.Objects;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 
+import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,15 +40,39 @@ public class RequestHandler implements Runnable {
             String[] parsing = res.split("\\s+");
             String url = parsing[1];
 
+            System.out.println(res);
             //Path currentPath = Paths.get("").toAbsolutePath();
             //boolean fileExists = Files.exists(Paths.get(filePath));
 
-            String filePath = "./src/main/resources/templates/index.html";
+            String filePath = "./src/main/resources/templates";
+
 
             if(url.equals("/index.html")){
-                body = Files.readAllBytes(new File(filePath).toPath());
+                body = Files.readAllBytes(new File(filePath + "/index.html").toPath());
+            }else if(url.equals("/user/form.html")){
+                body = Files.readAllBytes(new File(filePath + "/user/form.html").toPath());
             }else{
-                body = "Hello World".getBytes();
+                String []args = url.split("&");
+                System.out.println(args[0]);
+                System.out.println(args[1]);
+                String userId = args[0].split("\\?")[1].split("=")[1];
+
+                if(args.length > 1 && args[0].split("\\?")[0].equals("/user/create")){
+
+                    String password = args[1].split("=")[1];
+                    String name = args[2].split("=")[1];
+                    String email = args[3].split("=")[1];
+
+                    User user = new User(userId, password, name, email);
+                    body = Files.readAllBytes(new File(filePath + "/index.html").toPath());
+                    //System.out.println("userid" + userId +"   " + password + "  "+ name + "   "+ email);
+                }
+
+                else{
+                    body = "Hello World".getBytes();
+                }
+
+
             }
             response200Header(dos, body.length);
             responseBody(dos, body);
