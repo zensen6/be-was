@@ -5,10 +5,12 @@ import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Objects;
-import java.util.Scanner;
-import java.util.StringTokenizer;
+import java.util.*;
+import java.util.stream.Collectors;
 
+import DTO.RequestDTO;
+import DTO.ResponseDTO;
+import HandlerMapping.HandlerMapping;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +19,11 @@ public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
     private static final int BUFFER_SIZE = 4096;
     private Socket connection;
+
+    private static final List<String> contentType;
+    static{
+        contentType = new ArrayList<>();
+    }
 
     public RequestHandler(Socket connectionSocket) {
         this.connection = connectionSocket;
@@ -29,53 +36,19 @@ public class RequestHandler implements Runnable {
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             // TODO 사용자 요청에 대한 처리는 이 곳에 구현하면 된다.
             DataOutputStream dos = new DataOutputStream(out);
-            ///
-            //BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-            //StringTokenizer str = new StringTokenizer(reader.readLine());
-            //str.nextToken();
-
             byte[] body = null;
-            String res = readRequest(in);
-            logger.debug(res);
-            String[] parsing = res.split("\\s+");
-            String url = parsing[1];
-
-            System.out.println(res);
-            //Path currentPath = Paths.get("").toAbsolutePath();
-            //boolean fileExists = Files.exists(Paths.get(filePath));
+            RequestDTO Request = MakeRequest(in);
 
             String filePath = "./src/main/resources/templates";
 
+            HandlerMapping handlerMapping = new HandlerMapping(Request);
+            ResponseDTO responseDTO = new ResponseDTO();
+            responseDTO = handlerMapping.Controller();
 
-            if(url.equals("/index.html")){
-                body = Files.readAllBytes(new File(filePath + "/index.html").toPath());
-            }else if(url.equals("/user/form.html")){
-                body = Files.readAllBytes(new File(filePath + "/user/form.html").toPath());
-            }else{
-                String []args = url.split("&");
-                System.out.println(args[0]);
-                System.out.println(args[1]);
-                String userId = args[0].split("\\?")[1].split("=")[1];
+            //body = "Hello World".getBytes();
+            response200Header(dos, responseDTO.Getbody().length, responseDTO.GetreturnType());
+            responseBody(dos, responseDTO.Getbody());
 
-                if(args.length > 1 && args[0].split("\\?")[0].equals("/user/create")){
-
-                    String password = args[1].split("=")[1];
-                    String name = args[2].split("=")[1];
-                    String email = args[3].split("=")[1];
-
-                    User user = new User(userId, password, name, email);
-                    body = Files.readAllBytes(new File(filePath + "/index.html").toPath());
-                    //System.out.println("userid" + userId +"   " + password + "  "+ name + "   "+ email);
-                }
-
-                else{
-                    body = "Hello World".getBytes();
-                }
-
-
-            }
-            response200Header(dos, body.length);
-            responseBody(dos, body);
 
             ///
 
@@ -85,15 +58,30 @@ public class RequestHandler implements Runnable {
     }
     ///
 
-    private String readRequest(InputStream inputStream) throws IOException {
+    private RequestDTO MakeRequest(InputStream inputStream) throws IOException {
+        RequestDTO Request = new RequestDTO();
         // Read the request headers
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
         StringBuilder requestBuilder = new StringBuilder();
         String line;
+        line = reader.readLine();
+        requestBuilder.append(line).append("\r\n");
+        Request.SetHTTPMethod(line.split("\\s+")[0]);
+        Request.SetURI(line.split("\\s+")[1]);
+        Request.SetVersion(line.split("\\s+")[2]);
+
         while ((line = reader.readLine()) != null && !line.isEmpty()) {
             requestBuilder.append(line).append("\r\n");
+            if("Accept".equals(line.split(":")[0])){
+                String[] acceptContentsString  = line.split(":")[1].split(",");
+
+                for(String accept : acceptContentsString){
+                    Request.SetAccept(accept.trim().split(";")[0]);
+                }
+            }
         }
 
+        StringBuilder bodyJson = new StringBuilder();
         // Read the request body if present
         if ("POST".equals(getRequestMethod(requestBuilder.toString()))) {
             int contentLength = getContentLength(requestBuilder.toString());
@@ -101,11 +89,16 @@ public class RequestHandler implements Runnable {
             int bytesRead;
             while (contentLength > 0 && (bytesRead = reader.read(buffer, 0, Math.min(contentLength, BUFFER_SIZE))) != -1) {
                 requestBuilder.append(buffer, 0, bytesRead);
+                bodyJson.append(buffer, 0, bytesRead);
                 contentLength -= bytesRead;
             }
         }
 
-        return requestBuilder.toString();
+        Request.SetBody(requestBuilder.toString());
+
+        System.out.println(requestBuilder.toString());
+        // prints all the requests
+        return Request;
     }
     private String getRequestMethod(String request) {
         // Extract the request method from the request headers
@@ -125,13 +118,13 @@ public class RequestHandler implements Runnable {
     }
 
 
-
     ///
 
-    private void response200Header(DataOutputStream dos, int lengthOfBodyContent) {
+    private void response200Header(DataOutputStream dos, int lengthOfBodyContent, String contentType) {
         try {
             dos.writeBytes("HTTP/1.1 200 OK \r\n");
-            dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
+            //dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
+            dos.writeBytes("Content-Type: " + contentType + ";charset=utf-8\r\n");
             dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
             dos.writeBytes("\r\n");
         } catch (IOException e) {
