@@ -2,16 +2,11 @@ package webserver;
 
 import java.io.*;
 import java.net.Socket;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
-import java.util.stream.Collectors;
 
-import DTO.RequestDTO;
-import DTO.ResponseDTO;
+import DTO.Request;
+import DTO.Response;
 import HandlerMapping.HandlerMapping;
-import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,12 +32,12 @@ public class RequestHandler implements Runnable {
             // TODO 사용자 요청에 대한 처리는 이 곳에 구현하면 된다.
             DataOutputStream dos = new DataOutputStream(out);
             byte[] body = null;
-            RequestDTO Request = MakeRequest(in);
+            Request Request = MakeRequest(in);
 
             String filePath = "./src/main/resources/templates";
 
             HandlerMapping handlerMapping = new HandlerMapping(Request);
-            ResponseDTO responseDTO = new ResponseDTO();
+            Response responseDTO = new Response();
             responseDTO = handlerMapping.Controller();
 
             //body = "Hello World".getBytes();
@@ -58,8 +53,8 @@ public class RequestHandler implements Runnable {
     }
     ///
 
-    private RequestDTO MakeRequest(InputStream inputStream) throws IOException {
-        RequestDTO Request = new RequestDTO();
+    private Request MakeRequest(InputStream inputStream) throws IOException {
+        Request Request = new Request();
         // Read the request headers
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
         StringBuilder requestBuilder = new StringBuilder();
