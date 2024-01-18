@@ -6,6 +6,8 @@ import DTO.Request;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.HashMap;
+import java.util.Map;
 
 import DTO.Response;
 import org.slf4j.Logger;
@@ -18,6 +20,16 @@ public class HandlerMapping {
     private Request request;
     private String filePath = "./src/main/resources/templates";
     private String staticfilePath = "./src/main/resources/static";
+
+    private static Map<String, String> Mapping;
+
+    static {
+        Mapping = new HashMap<>();
+        Mapping.put("css", "text/css");
+        Mapping.put("js", "application/javascript");
+        Mapping.put("fonts", "application/font-woff");
+    }
+
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
 
     public HandlerMapping(Request request){
@@ -25,15 +37,12 @@ public class HandlerMapping {
     }
     public HandlerMapping(){}
 
-    public Response Controller(){
+    public Response Controller() throws IOException {
 
         Response response = new Response();
         response.SetreturnType("text/html");
         byte[] body = null;
-        String URI = request.GetURI();      // URI = /user/create?.....
-
-        System.out.println("Request URI" +  URI);
-
+        String URI = request.GetURI();
         body = urlParsing(URI, response);
         response.Setbody(body);
         return response;
@@ -41,35 +50,33 @@ public class HandlerMapping {
     }
 
 
-    public byte[] urlParsing(String URI,  Response response){
+    public byte[] urlParsing(String URI,  Response response) throws IOException {
         byte[] body = null;
-        try{
-            if("css".equals(URI.split("/")[1])){
-                response.SetreturnType("text/css");
-                body = Files.readAllBytes(new File(staticfilePath + "/css/" + URI.split("/")[2]).toPath());
-
-            }else if("js".equals(URI.split("/")[1])){
-                response.SetreturnType("application/javascript");
-                body = Files.readAllBytes(new File(staticfilePath + "/js/" + URI.split("/")[2]).toPath());
-            }else if("fonts".equals(URI.split("/")[1])){
-                response.SetreturnType("application/font-woff");
-                body = Files.readAllBytes(new File(staticfilePath + "/fonts/" + URI.split("/")[2]).toPath());
-            }
-
-
-            else if (URI.equals("/index.html")) {
-
-                body = Files.readAllBytes(new File(filePath + "/index.html").toPath());
-
-            }else if(URI.split("/")[1].equals("user")){
-
-
-                UserController userController = new UserController(URI.split("/")[2]);
-                body = userController.UserLogic();
-            }
+        String type = URI.split("/")[1];
+        if(Mapping.get(type) != null){
+            body = notHTML(URI, response);
+        }else{
+            body = HTML(URI);
         }
-        catch (IOException e) {
-            logger.error(e.getMessage());
+
+        return body;
+    }
+
+    public byte[] notHTML(String URI, Response response) throws IOException {
+        String type = URI.split("/")[1];
+        String file = URI.split("/")[2];
+        response.SetreturnType(Mapping.get(type));
+        return Files.readAllBytes(new File(staticfilePath + "/" + type + "/" + file).toPath());
+    }
+
+    public byte[] HTML(String URI) throws IOException {
+        byte[] body = null;
+        String middleURI = URI.split("/")[1];
+        if (URI.equals("/index.html")) {
+            body = Files.readAllBytes(new File(filePath + "/index.html").toPath());
+        }else if(middleURI.equals("user")){
+            UserController userController = new UserController(URI.split("/")[2]);
+            body = userController.UserLogic();
         }
         return body;
     }
