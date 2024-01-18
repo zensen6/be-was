@@ -15,34 +15,44 @@ import webserver.RequestHandler;
 
 public class HandlerMapping {
 
-    private Request requestDTO;
+    private Request request;
     private String filePath = "./src/main/resources/templates";
     private String staticfilePath = "./src/main/resources/static";
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
 
-    public HandlerMapping(Request requestDTO){
-        this.requestDTO = requestDTO;
+    public HandlerMapping(Request request){
+        this.request = request;
     }
+    public HandlerMapping(){}
 
     public Response Controller(){
 
-        Response responseDTO = new Response();
-        responseDTO.SetreturnType("text/html");
-
+        Response response = new Response();
+        response.SetreturnType("text/html");
         byte[] body = null;
-        try {
-            String URI = requestDTO.GetURI();
+        String URI = request.GetURI();      // URI = /user/create?.....
+
+        System.out.println("Request URI" +  URI);
+
+        body = urlParsing(URI, response);
+        response.Setbody(body);
+        return response;
+
+    }
 
 
+    public byte[] urlParsing(String URI,  Response response){
+        byte[] body = null;
+        try{
             if("css".equals(URI.split("/")[1])){
-                responseDTO.SetreturnType("text/css");
+                response.SetreturnType("text/css");
                 body = Files.readAllBytes(new File(staticfilePath + "/css/" + URI.split("/")[2]).toPath());
 
             }else if("js".equals(URI.split("/")[1])){
-                responseDTO.SetreturnType("application/javascript");
+                response.SetreturnType("application/javascript");
                 body = Files.readAllBytes(new File(staticfilePath + "/js/" + URI.split("/")[2]).toPath());
             }else if("fonts".equals(URI.split("/")[1])){
-                responseDTO.SetreturnType("application/font-woff");
+                response.SetreturnType("application/font-woff");
                 body = Files.readAllBytes(new File(staticfilePath + "/fonts/" + URI.split("/")[2]).toPath());
             }
 
@@ -57,16 +67,12 @@ public class HandlerMapping {
                 UserController userController = new UserController(URI.split("/")[2]);
                 body = userController.UserLogic();
             }
-
         }
         catch (IOException e) {
-                logger.error(e.getMessage());
+            logger.error(e.getMessage());
         }
-        responseDTO.Setbody(body);
-        return responseDTO;
-
+        return body;
     }
-
 
 
 }

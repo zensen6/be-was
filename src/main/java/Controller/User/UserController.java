@@ -33,9 +33,6 @@ public class UserController {
                 String email = args[3].split("=")[1];
                 User user = new User(userId, password, name, email);
 
-                //System.out.println("CREATE" + args[0].split("\\?")[1].split("=")[1]);
-
-
                 User finduser = Database.findUserById(userId);
                 if(finduser == null){
                     Database.addUser(user);
@@ -44,9 +41,6 @@ public class UserController {
                 }else{
                     body = Files.readAllBytes(new File(userFile + "/signup_failed.html").toPath());
                 }
-
-                //System.out.println("aaaaaaaaaaaa" + Database.findAll());
-
 
             }
         }catch(Exception e){

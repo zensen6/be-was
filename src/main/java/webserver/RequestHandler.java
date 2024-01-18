@@ -34,15 +34,13 @@ public class RequestHandler implements Runnable {
             byte[] body = null;
             Request Request = MakeRequest(in);
 
-            String filePath = "./src/main/resources/templates";
+
 
             HandlerMapping handlerMapping = new HandlerMapping(Request);
-            Response responseDTO = new Response();
-            responseDTO = handlerMapping.Controller();
+            Response response = handlerMapping.Controller();
 
-            //body = "Hello World".getBytes();
-            response200Header(dos, responseDTO.Getbody().length, responseDTO.GetreturnType());
-            responseBody(dos, responseDTO.Getbody());
+            response200Header(dos, response.Getbody().length, response.GetreturnType());
+            responseBody(dos, response.Getbody());
 
 
             ///
@@ -64,6 +62,9 @@ public class RequestHandler implements Runnable {
         Request.SetHTTPMethod(line.split("\\s+")[0]);
         Request.SetURI(line.split("\\s+")[1]);
         Request.SetVersion(line.split("\\s+")[2]);
+
+
+
 
         while ((line = reader.readLine()) != null && !line.isEmpty()) {
             requestBuilder.append(line).append("\r\n");
