@@ -59,8 +59,8 @@ public class UserController {
                     body = Files.readAllBytes(new File(filePath + "/index.html").toPath());
                     response.SetRedirectUrl(HttpStatus.REDIRECT, "/index.html");
                 }else{
-                    Files.readAllBytes(new File(userFile + "/login_failed.html").toPath());
-                    response.SetHttpStatus(HttpStatus.BAD_REQUEST);
+                    body = Files.readAllBytes(new File(userFile + "/login_failed.html").toPath());
+                    response.SetHttpStatus(HttpStatus.OK);
                 }
 
             }else if("create".equals(URI.substring(0,6))){
@@ -77,12 +77,12 @@ public class UserController {
                     Database.addUser(user);
                     body = Files.readAllBytes(new File(userFile + "/login.html").toPath());
 
-                    response.SetRedirectUrl(HttpStatus.REDIRECT, "/index.html");
+                    response.SetRedirectUrl(HttpStatus.REDIRECT, "/user/login.html");
 
                 }else{
                     body = Files.readAllBytes(new File(userFile + "/signup_failed.html").toPath());
 
-                    response.SetHttpStatus(HttpStatus.BAD_REQUEST);
+                    response.SetHttpStatus(HttpStatus.OK);
                 }
 
             }else if("login.html".equals(URI)){
