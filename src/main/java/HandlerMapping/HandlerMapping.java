@@ -80,11 +80,9 @@ public class HandlerMapping {
         byte[] body = null;
         String middleURI = URI.split("/")[1];
         if (URI.equals("/index.html")) {
-            //body = Files.readAllBytes(new File(filePath + "/index.html").toPath());
             body = FileBytes.FilesreadAllBytes(filePath + "/index.html");
             response.Setbody(body);
             response.SetHttpStatus(HttpStatus.OK);
-
         }else if(middleURI.equals("user")){
             UserController userController = new UserController(URI.split("/")[2], request);
             response = userController.UserLogic();

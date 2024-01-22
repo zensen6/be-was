@@ -45,13 +45,10 @@ public class RequestHandler implements Runnable {
             //responseBody(dos, response.getBody());
 
 
-            ///
-
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
     }
-    ///
 
     private Request MakeRequest(InputStream inputStream) throws IOException {
         Request Request = new Request();
@@ -94,8 +91,8 @@ public class RequestHandler implements Runnable {
 
         Request.SetBody(bodyJson.toString());
 
-        System.out.println(requestBuilder.toString());
-        // prints all the requests
+        logger.debug(requestBuilder.toString());
+
         return Request;
     }
     private String getRequestMethod(String request) {
