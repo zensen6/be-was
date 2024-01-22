@@ -1,6 +1,7 @@
 package HandlerMapping;
 
 import Controller.User.UserController;
+import DTO.HttpStatus;
 import DTO.Request;
 
 import java.io.File;
@@ -41,44 +42,52 @@ public class HandlerMapping {
 
         Response response = new Response();
         response.SetreturnType("text/html");
-        byte[] body = null;
+
+
         String URI = request.GetURI();
-        body = urlParsing(URI, response);
-        response.Setbody(body);
+        //body = urlParsing(URI, response);
+        response = urlParsing(request, response);
         return response;
 
     }
 
 
-    public byte[] urlParsing(String URI,  Response response) throws IOException {
-        byte[] body = null;
+    public Response urlParsing(Request request,  Response response) throws IOException {
+
+        String URI = request.GetURI();
         String type = URI.split("/")[1];
         if(Mapping.get(type) != null){
-            body = notHTML(URI, response);
+            response = notHTML(URI, response);
         }else{
-            body = HTML(URI);
+            response = HTML(URI, request);
         }
 
-        return body;
+        return response;
     }
 
-    public byte[] notHTML(String URI, Response response) throws IOException {
+    public Response notHTML(String URI, Response response) throws IOException {
         String type = URI.split("/")[1];
         String file = URI.split("/")[2];
         response.SetreturnType(Mapping.get(type));
-        return Files.readAllBytes(new File(staticfilePath + "/" + type + "/" + file).toPath());
+        response.Setbody(Files.readAllBytes(new File(staticfilePath + "/" + type + "/" + file).toPath()));
+        response.SetHttpStatus(HttpStatus.OK);
+        return response;
     }
 
-    public byte[] HTML(String URI) throws IOException {
+    public Response HTML(String URI, Request request) throws IOException {
+        Response response = new Response();
         byte[] body = null;
         String middleURI = URI.split("/")[1];
         if (URI.equals("/index.html")) {
             body = Files.readAllBytes(new File(filePath + "/index.html").toPath());
+            response.Setbody(body);
+            response.SetHttpStatus(HttpStatus.OK);
+
         }else if(middleURI.equals("user")){
-            UserController userController = new UserController(URI.split("/")[2]);
-            body = userController.UserLogic();
+            UserController userController = new UserController(URI.split("/")[2], request);
+            response = userController.UserLogic();
         }
-        return body;
+        return response;
     }
 
 
