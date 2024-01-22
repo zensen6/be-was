@@ -3,13 +3,13 @@ package Controller.User;
 import DTO.HttpStatus;
 import DTO.Request;
 import DTO.Response;
+import Functions.FileBytes;
 import com.sun.net.httpserver.HttpServer;
 import db.Database;
 import model.User;
 
 import javax.xml.crypto.Data;
 import java.io.File;
-import java.nio.file.Files;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +42,8 @@ public class UserController {
         Response response = new Response();
         try {
             if ("form.html".equals(URI)) {
-                body = Files.readAllBytes(new File(filePath + "/user/form.html").toPath());
+                //body = Files.readAllBytes(new File(filePath + "/user/form.html").toPath());
+                body = FileBytes.FilesreadAllBytes(filePath + "/user/form.html");
                 response.SetHttpStatus(HttpStatus.OK);
 
             }else if("login".equals(URI)){
@@ -56,10 +57,13 @@ public class UserController {
                 User user = Database.findUserById(userId);
                 if(user != null && user.getPassword().equals(password)){ // 로그인 성공
                     logger.debug("logged in");
-                    body = Files.readAllBytes(new File(filePath + "/index.html").toPath());
+                    //body = Files.readAllBytes(new File(filePath + "/index.html").toPath());
+                    body = FileBytes.FilesreadAllBytes(filePath + "/index.html");
                     response.SetRedirectUrl(HttpStatus.REDIRECT, "/index.html");
                 }else{
-                    body = Files.readAllBytes(new File(userFile + "/login_failed.html").toPath());
+                    //body = Files.readAllBytes(new File(userFile + "/login_failed.html").toPath());
+                    body = FileBytes.FilesreadAllBytes(userFile + "/login_failed.html");
+
                     response.SetHttpStatus(HttpStatus.OK);
                 }
 
@@ -75,19 +79,21 @@ public class UserController {
                 User finduser = Database.findUserById(userId);
                 if(finduser == null){
                     Database.addUser(user);
-                    body = Files.readAllBytes(new File(userFile + "/login.html").toPath());
+                    //body = Files.readAllBytes(new File(userFile + "/login.html").toPath());
+                    body = FileBytes.FilesreadAllBytes(userFile + "/login.html");
+
 
                     response.SetRedirectUrl(HttpStatus.REDIRECT, "/user/login.html");
 
                 }else{
-                    body = Files.readAllBytes(new File(userFile + "/signup_failed.html").toPath());
-
+                    //body = Files.readAllBytes(new File(userFile + "/signup_failed.html").toPath());
+                    body = FileBytes.FilesreadAllBytes(userFile + "/signup_failed.html");
                     response.SetHttpStatus(HttpStatus.OK);
                 }
 
             }else if("login.html".equals(URI)){
-                body = Files.readAllBytes(new File(filePath + "/user/login.html").toPath());
-
+                //body = Files.readAllBytes(new File(filePath + "/user/login.html").toPath());
+                body = FileBytes.FilesreadAllBytes(filePath + "/user/login.html");
                 response.SetHttpStatus(HttpStatus.OK);
 
             }

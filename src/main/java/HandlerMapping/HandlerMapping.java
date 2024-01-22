@@ -6,11 +6,11 @@ import DTO.Request;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 
 import DTO.Response;
+import Functions.FileBytes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import webserver.RequestHandler;
@@ -69,7 +69,8 @@ public class HandlerMapping {
         String type = URI.split("/")[1];
         String file = URI.split("/")[2];
         response.SetreturnType(Mapping.get(type));
-        response.Setbody(Files.readAllBytes(new File(staticfilePath + "/" + type + "/" + file).toPath()));
+        //response.Setbody(Files.readAllBytes(new File(staticfilePath + "/" + type + "/" + file).toPath()));
+        response.Setbody(FileBytes.FilesreadAllBytes(staticfilePath + "/" + type + "/" + file));
         response.SetHttpStatus(HttpStatus.OK);
         return response;
     }
@@ -79,7 +80,8 @@ public class HandlerMapping {
         byte[] body = null;
         String middleURI = URI.split("/")[1];
         if (URI.equals("/index.html")) {
-            body = Files.readAllBytes(new File(filePath + "/index.html").toPath());
+            //body = Files.readAllBytes(new File(filePath + "/index.html").toPath());
+            body = FileBytes.FilesreadAllBytes(filePath + "/index.html");
             response.Setbody(body);
             response.SetHttpStatus(HttpStatus.OK);
 
