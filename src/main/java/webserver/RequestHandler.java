@@ -33,9 +33,10 @@ public class RequestHandler implements Runnable {
             // TODO 사용자 요청에 대한 처리는 이 곳에 구현하면 된다.
             DataOutputStream dos = new DataOutputStream(out);
             byte[] body = null;
+
+
+
             Request Request = MakeRequest(in);
-
-
 
             HandlerMapping handlerMapping = new HandlerMapping(Request);
             Response response = handlerMapping.Controller();
@@ -93,6 +94,8 @@ public class RequestHandler implements Runnable {
 
         logger.debug(requestBuilder.toString());
 
+
+
         return Request;
     }
     private String getRequestMethod(String request) {
@@ -118,7 +121,6 @@ public class RequestHandler implements Runnable {
     private void response200Header(DataOutputStream dos, int lengthOfBodyContent, String contentType) {
         try {
             dos.writeBytes("HTTP/1.1 200 OK \r\n");
-            //dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
             dos.writeBytes("Content-Type: " + contentType + ";charset=utf-8\r\n");
             dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
             dos.writeBytes("\r\n");
@@ -138,7 +140,19 @@ public class RequestHandler implements Runnable {
 
 
     public static void responseRedirectWithoutBody(DataOutputStream dos, Request request, Response response) throws IOException {
+
         dos.writeBytes(request.GetVersion() + " " + response.getStatus().getStatusCode() + " " + response.getStatus().getMessage() + "\r\n");
+
+
+        if(response.getSidSet()){
+            dos.writeBytes("Set-Cookie: " + "sid="+response.getSid()+"; "+"Path=/\r\n");
+
+        }
+
+
+
+
+
         dos.writeBytes("Location: " + response.getRedirectUrl() + "\r\n");
         dos.writeBytes("\r\n");
         dos.flush();

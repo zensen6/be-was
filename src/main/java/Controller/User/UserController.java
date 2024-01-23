@@ -53,13 +53,15 @@ public class UserController {
                 User user = Database.findUserById(userId);
                 if(user != null && user.getPassword().equals(password)){ // 로그인 성공
                     body = FileBytes.FilesreadAllBytes(filePath + "/index.html");
+                    response.SetSid();
+                    response.SetSidSet();
                     response.SetRedirectUrl(HttpStatus.REDIRECT, "/index.html");
                 }else{
                     body = FileBytes.FilesreadAllBytes(userFile + "/login_failed.html");
                     response.SetHttpStatus(HttpStatus.OK);
                 }
 
-            }else if("create".equals(URI.substring(0,6))){
+            }else if(URI.startsWith("create")){
 
                 String body_str = request.GetBody();
 
@@ -72,9 +74,9 @@ public class UserController {
                 if(finduser == null){
                     User user = new User(userId, password, name, email);
                     Database.addUser(user);
-                    body = FileBytes.FilesreadAllBytes(userFile + "/login.html");
+                    body = FileBytes.FilesreadAllBytes(filePath + "/index.html");
 
-                    response.SetRedirectUrl(HttpStatus.REDIRECT, "/user/login.html");
+                    response.SetRedirectUrl(HttpStatus.REDIRECT, "/index.html");
 
                 }else{
 
