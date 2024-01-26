@@ -107,8 +107,7 @@ public class RequestHandler implements Runnable {
 
         Request.SetBody(bodyJson.toString());
 
-        logger.debug("request make sid: "+ Request.GetSid());
-
+        //logger.debug(requestBuilder.toString());
         return Request;
     }
     private String getRequestMethod(String request) {
@@ -154,7 +153,6 @@ public class RequestHandler implements Runnable {
         dos.writeBytes(request.GetVersion() + " " + response.getStatus().getStatusCode() + " " + response.getStatus().getMessage() + "\r\n");
         if(response.getSidSet()){
             dos.writeBytes("Set-Cookie: " + "sid="+response.getSid()+"; "+"Path=/\r\n");
-
         }
         dos.writeBytes("Location: " + response.getRedirectUrl() + "\r\n");
         dos.writeBytes("\r\n");

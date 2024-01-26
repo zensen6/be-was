@@ -15,6 +15,8 @@ public class Response {
 
     private boolean sidSet;
 
+    private static long serverStartupTime = System.currentTimeMillis();
+
 
     public Response(){
         this.sidSet = false;
@@ -43,8 +45,8 @@ public class Response {
 
     public void SetSid(){
         Random random = new Random();
-        int sid = random.nextInt(900000) + 100000;
-        this.sid = String.valueOf(sid);
+        this.sid = String.valueOf(random.nextInt(900000) + 100000);
+
     }
 
     public String getRedirectUrl(){

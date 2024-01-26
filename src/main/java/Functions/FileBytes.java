@@ -1,14 +1,19 @@
 package Functions;
 
+import model.User;
+
 import java.io.*;
 
 public class FileBytes {
 
     private String fileURL;
 
-    public static byte[] FilesreadAllBytes(String fileURL){
+
+    public static byte[] FilesreadAllBytes(String fileURL, User user){
 
         StringBuilder content = new StringBuilder();
+
+
 
         byte[] body = new byte[0];
 
@@ -16,7 +21,17 @@ public class FileBytes {
             String line;
             while ((line = reader.readLine()) != null) {
                 content.append(line).append(System.lineSeparator());
-                System.out.println("line:  " + line);
+                //System.out.println("line:  " + line);
+
+
+                if(user != null && line.contains("<a href=\"index.html\" class=\"navbar-brand\">SLiPP</a>")){
+                    System.out.println("User name : " + user.getName());
+                    content.append("<div>" + user.getName() + "</div>");
+                }
+
+
+
+
             }
             return content.toString().getBytes("UTF-8");
         } catch (IOException e) {
@@ -43,8 +58,6 @@ public class FileBytes {
         }
 
          */
-
-
 
         return body;
     }

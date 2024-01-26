@@ -11,6 +11,8 @@ import java.util.Map;
 
 import DTO.Response;
 import Functions.FileBytes;
+import Functions.Session;
+import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import webserver.RequestHandler;
@@ -57,6 +59,10 @@ public class HandlerMapping {
 
         String URI = request.GetURI();
         String type = URI.split("/")[1];
+
+        String sid = request.GetSid();
+        logger.debug("SID:::::" + sid);
+
         if(Mapping.get(type) != null){
             response = notHTML(URI, response);
         }else{
@@ -67,11 +73,16 @@ public class HandlerMapping {
     }
 
     public Response notHTML(String URI, Response response) throws IOException {
+
+
+
+
+
         String type = URI.split("/")[1];
         String file = URI.split("/")[2];
         response.SetreturnType(Mapping.get(type));
         //response.Setbody(Files.readAllBytes(new File(staticfilePath + "/" + type + "/" + file).toPath()));
-        response.Setbody(FileBytes.FilesreadAllBytes(staticfilePath + "/" + type + "/" + file));
+        response.Setbody(FileBytes.FilesreadAllBytes(staticfilePath + "/" + type + "/" + file, null));
         response.SetHttpStatus(HttpStatus.OK);
         return response;
     }
@@ -80,11 +91,22 @@ public class HandlerMapping {
 
         Response response = new Response();
         byte[] body = null;
+
+        String sid = request.GetSid();
+        User logined_user = null;
+        if(sid != null ) {
+            logined_user = Session.SessionMap.get(sid);
+            logger.debug("HTML USer:");
+        }
+
+
         String middleURI = URI.split("/")[1];
         if (URI.equals("/index.html")) {
-            body = FileBytes.FilesreadAllBytes(filePath + "/index.html");
+
+            body = FileBytes.FilesreadAllBytes(filePath + "/index.html", logined_user);
             response.Setbody(body);
             response.SetHttpStatus(HttpStatus.OK);
+
         }else if(middleURI.equals("user")){
             UserController userController = new UserController(URI.split("/")[2], request);
             response = userController.UserLogic(request);
