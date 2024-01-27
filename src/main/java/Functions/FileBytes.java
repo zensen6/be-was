@@ -17,16 +17,21 @@ public class FileBytes {
             StringBuilder content = new StringBuilder();
 
 
-            try (BufferedReader reader = new BufferedReader(new FileReader(fileURL))) {
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(fileURL), "UTF-8"))) {
                 String line;
+                boolean imbed = false;
                 while ((line = reader.readLine()) != null) {
+
                     content.append(line).append(System.lineSeparator());
-                    //System.out.println("line:  " + line);
-
-
-                    if (user != null && line.contains("<a href=\"index.html\" class=\"navbar-brand\">SLiPP</a>")) {
+                    System.out.println("line:  " + line);
+                    //line.contains("<a href=\"index.html\" class=\"navbar-brand\">SLiPP</a>")
+                    if (user != null && line.contains("<ul class=\"nav navbar-nav navbar-right\">") && !imbed) {
                         System.out.println("User name : " + user.getName());
-                        content.append("<div>" + user.getName() + "</div>");
+                        //content.append("<li class=\"name\">");
+                        content.append("<li>");
+                        content.append("<div class=\"name\">" + user.getName() + " 님 " +  "</div>");
+                        content.append("</li>");
+                        imbed = true;
                     }
 
 
