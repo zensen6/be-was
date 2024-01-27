@@ -1,5 +1,6 @@
 package HandlerMapping;
 
+import Controller.User.QnaController;
 import Controller.User.UserController;
 import HTTPModel.HttpStatus;
 import HTTPModel.Request;
@@ -96,9 +97,14 @@ public class HandlerMapping {
             response.SetHttpStatus(HttpStatus.OK);
 
         }else {
+
+
             if(middleURI.equals("user")){
                 UserController userController = new UserController(URI.split("/")[2], request);
                 response = userController.UserLogic(request);
+            }else if(middleURI.equals("qna")){
+                QnaController qnaController = new QnaController(URI.split("/")[2], request);
+                response = qnaController.QnaLogic(request);
             }
         }
         response.SetreturnType("text/html");
