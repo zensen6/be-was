@@ -4,7 +4,7 @@ import HTTPModel.HttpStatus;
 import HTTPModel.Request;
 import HTTPModel.Response;
 import Functions.FileBytes;
-import Functions.Session;
+import HTTPModel.Session;
 import db.Database;
 import model.User;
 
@@ -42,11 +42,7 @@ public class UserController {
 
         if(sid != null){
             logined_user = Session.getSession(sid);
-            logger.debug("Userlogic SID:" + sid);
-
         }
-        //logger.debug("LOGGEED IN USER : " + logined_user.getUserId());
-
 
         try {
             if ("form.html".equals(URI)) {
@@ -63,7 +59,6 @@ public class UserController {
 
                 if(user != null && password.equals(user.getPassword()) && userId.equals(user.getUserId())){ // 로그인 성공
                     body = FileBytes.FilesreadAllBytes(filePath + "/index.html", logined_user, true);
-                    logger.debug("USER::::" + user.getName());
                     response.SetSid();
                     response.SetSidSet();
                     Session.addSession(response.getSid(),user);
@@ -80,12 +75,11 @@ public class UserController {
             }else if(URI.startsWith("create")){
 
                 String body_str = request.GetBody();
-;
-                logger.debug("SID ONLY WITH signup : " + sid);
                 String userId = body_str.split("&")[0].split("=")[1];
                 String password = body_str.split("&")[1].split("=")[1];
                 String name = body_str.split("&")[2].split("=")[1];
                 String email = body_str.split("&")[3].split("=")[1];
+
                 User finduser = Database.findUserById(userId);
 
                 if(finduser == null){
@@ -108,6 +102,14 @@ public class UserController {
                 body = FileBytes.FilesreadAllBytes(filePath + "/user/login.html", logined_user, true);
                 response.SetHttpStatus(HttpStatus.OK);
 
+            }else if("list".equals(URI)){
+                if(logined_user == null){
+                    body = FileBytes.FilesreadAllBytes(filePath + "/user/login.html", null, true);
+                    response.SetHttpStatus(HttpStatus.REDIRECT);
+                }else {
+                    body = FileBytes.FilesreadAllBytes(filePath + "/user/list.html", logined_user, true);
+                    response.SetHttpStatus(HttpStatus.OK);
+                }
             }
         }catch(Exception e){
 

@@ -10,7 +10,7 @@ import java.util.Map;
 
 import HTTPModel.Response;
 import Functions.FileBytes;
-import Functions.Session;
+import HTTPModel.Session;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,8 +42,6 @@ public class HandlerMapping {
     public Response Controller() throws IOException {
 
         Response response = new Response();
-        response.SetreturnType("text/html");
-
         String URI = request.GetURI();
         response = divideContents(request, response);
         return response;
@@ -85,21 +83,24 @@ public class HandlerMapping {
         User logined_user = null;
         if(sid != null ) {
             logined_user = Session.SessionMap.get(sid);
-            logger.debug("HTML USer:");
         }
 
 
         String middleURI = URI.split("/")[1];
+
         if (URI.equals("/index.html")) {
 
             body = FileBytes.FilesreadAllBytes(filePath + "/index.html", logined_user, true);
             response.Setbody(body);
             response.SetHttpStatus(HttpStatus.OK);
 
-        }else if(middleURI.equals("user")){
-            UserController userController = new UserController(URI.split("/")[2], request);
-            response = userController.UserLogic(request);
+        }else {
+            if(middleURI.equals("user")){
+                UserController userController = new UserController(URI.split("/")[2], request);
+                response = userController.UserLogic(request);
+            }
         }
+        response.SetreturnType("text/html");
         return response;
     }
 
