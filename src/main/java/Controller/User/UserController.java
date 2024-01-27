@@ -1,5 +1,6 @@
 package Controller.User;
 
+import Controller.User.UserLogic.UserLogic;
 import HTTPModel.HttpStatus;
 import HTTPModel.Request;
 import HTTPModel.Response;
@@ -17,8 +18,6 @@ public class UserController {
 
     private Request request;
 
-    private byte[] body;
-
     private Session Session = new Session();
 
     private static final Logger logger = LoggerFactory.getLogger(webserver.RequestHandler.class);
@@ -28,11 +27,6 @@ public class UserController {
         this.request = request;
 
     }
-
-    private String userFile = "./src/main/resources/templates/user";
-    private String filePath = "./src/main/resources/templates";
-
-
 
     public Response UserLogic(Request request) {
 
@@ -46,75 +40,36 @@ public class UserController {
 
         try {
             if ("form.html".equals(URI)) {
-                body = FileBytes.FilesreadAllBytes(filePath + "/user/form.html", logined_user, true);
-                response.SetHttpStatus(HttpStatus.OK);
+
+                response = UserLogic.userForm(request, logined_user);
 
             }else if("login".equals(URI)){
-                String body_str = request.GetBody();
 
-                String userId = body_str.split("&")[0].split("=")[1];
-                String password = body_str.split("&")[1].split("=")[1];
-
-                User user = Database.findUserById(userId);
-
-                if(user != null && password.equals(user.getPassword()) && userId.equals(user.getUserId())){ // 로그인 성공
-                    body = FileBytes.FilesreadAllBytes(filePath + "/index.html", logined_user, true);
-                    response.SetSid();
-                    response.SetSidSet();
-                    Session.addSession(response.getSid(),user);
-                    response.SetRedirectUrl(HttpStatus.REDIRECT, "/index.html");
-
-                    logger.debug("login SUCCEESSSS: ");
-
-
-                }else{
-                    body = FileBytes.FilesreadAllBytes(userFile + "/login_failed.html", logined_user, true);
-                    response.SetHttpStatus(HttpStatus.OK);
-                }
+                response = UserLogic.userLoginSuccess(request,logined_user);
 
             }else if(URI.startsWith("create")){
 
-                String body_str = request.GetBody();
-                String userId = body_str.split("&")[0].split("=")[1];
-                String password = body_str.split("&")[1].split("=")[1];
-                String name = body_str.split("&")[2].split("=")[1];
-                String email = body_str.split("&")[3].split("=")[1];
-
-                User finduser = Database.findUserById(userId);
-
-                if(finduser == null){
-                    User user = new User(userId, password, name, email);
-                    Database.addUser(user);
-
-                    body = FileBytes.FilesreadAllBytes(filePath + "/index.html", logined_user, true);
-
-                    response.SetRedirectUrl(HttpStatus.REDIRECT, "/index.html");
-
-                }else{
-
-                    body = FileBytes.FilesreadAllBytes(userFile + "/signup_failed.html", logined_user, true);
-                    response.SetHttpStatus(HttpStatus.OK);
-                }
-
+                response = UserLogic.userSignup(request, logined_user);
 
 
             }else if("login.html".equals(URI)){
-                body = FileBytes.FilesreadAllBytes(filePath + "/user/login.html", logined_user, true);
-                response.SetHttpStatus(HttpStatus.OK);
+
+                response = UserLogic.userLogin(request, logined_user);
+
 
             }else if("list".equals(URI)){
-                if(logined_user == null){
-                    body = FileBytes.FilesreadAllBytes(filePath + "/user/login.html", null, true);
-                    response.SetRedirectUrl(HttpStatus.REDIRECT, "/user/login.html");
-                }else {
-                    body = FileBytes.FilesreadAllBytes(filePath + "/user/list.html", logined_user, true);
-                    response.SetHttpStatus(HttpStatus.OK);
-                }
+
+                response = UserLogic.userList(request, logined_user);
+
+            }else if("profile.html".equals(URI)){
+
+                response = UserLogic.userProfile(request, logined_user);
+
             }
+
         }catch(Exception e){
 
         }
-        response.Setbody(body);
         return response;
     }
 

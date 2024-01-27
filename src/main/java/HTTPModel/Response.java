@@ -21,6 +21,11 @@ public class Response {
     public Response(){
         this.sidSet = false;
     };
+
+    public Response(HttpStatus httpStatus){
+        this.status = httpStatus;
+    }
+
     public Response(HttpStatus httpStatus, byte[] body){
         this.status = httpStatus;
         this.body = body;

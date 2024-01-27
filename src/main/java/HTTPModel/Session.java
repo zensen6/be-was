@@ -10,7 +10,7 @@ public class Session {
 
     public static Map<String, User> SessionMap = Collections.synchronizedMap(new HashMap<>());
 
-    public void addSession(String sid, User user){
+    public static void addSession(String sid, User user){
         SessionMap.put(sid, user);
     }
 

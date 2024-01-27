@@ -68,7 +68,9 @@ public class RequestMake {
 
         Request.SetBody(bodyJson.toString());
 
-        //logger.debug(requestBuilder.toString());
+
+        System.out.println(requestBuilder.toString());
+
         return Request;
     }
     private static String getRequestMethod(String request) {

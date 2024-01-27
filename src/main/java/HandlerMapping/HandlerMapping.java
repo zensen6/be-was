@@ -30,6 +30,7 @@ public class HandlerMapping {
         Mapping.put("css", "text/css");
         Mapping.put("js", "application/javascript");
         Mapping.put("fonts", "application/font-woff");
+        Mapping.put("images", "image/png");
     }
 
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
