@@ -1,15 +1,14 @@
 package HandlerMapping;
 
 import Controller.User.UserController;
-import DTO.HttpStatus;
-import DTO.Request;
+import HTTPModel.HttpStatus;
+import HTTPModel.Request;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import DTO.Response;
+import HTTPModel.Response;
 import Functions.FileBytes;
 import Functions.Session;
 import model.User;
@@ -46,23 +45,17 @@ public class HandlerMapping {
         response.SetreturnType("text/html");
 
         String URI = request.GetURI();
-        //body = urlParsing(URI, response);
-        response = urlParsing(request, response);
+        response = divideContents(request, response);
         return response;
-
-
 
     }
 
 
 
-    public Response urlParsing(Request request,  Response response) throws IOException {
+    public Response divideContents(Request request,  Response response) throws IOException {
 
         String URI = request.GetURI();
         String type = URI.split("/")[1];
-
-        String sid = request.GetSid();
-        logger.debug("SID:::::" + sid);
 
         if(Mapping.get(type) != null){
             response = notHTML(URI, response);
@@ -78,7 +71,6 @@ public class HandlerMapping {
         String type = URI.split("/")[1];
         String file = URI.split("/")[2];
         response.SetreturnType(Mapping.get(type));
-        //response.Setbody(Files.readAllBytes(new File(staticfilePath + "/" + type + "/" + file).toPath()));
         response.Setbody(FileBytes.FilesreadAllBytes(staticfilePath + "/" + type + "/" + file, null,false));
         response.SetHttpStatus(HttpStatus.OK);
         return response;

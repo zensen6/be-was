@@ -1,18 +1,12 @@
 package Controller.User;
 
-import DTO.HttpStatus;
-import DTO.Request;
-import DTO.Response;
+import HTTPModel.HttpStatus;
+import HTTPModel.Request;
+import HTTPModel.Response;
 import Functions.FileBytes;
 import Functions.Session;
-import com.sun.net.httpserver.HttpServer;
 import db.Database;
 import model.User;
-
-import javax.xml.crypto.Data;
-import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

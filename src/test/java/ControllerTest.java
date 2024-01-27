@@ -1,19 +1,12 @@
 
-import Controller.User.UserController;
-import DTO.Response;
-import HandlerMapping.HandlerMapping;
 import db.Database;
 import model.User;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
-import webserver.RequestHandler;
 
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.Collection;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
