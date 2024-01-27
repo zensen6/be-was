@@ -42,9 +42,6 @@ public class FileBytes {
 
 
                     ////////// user list
-
-
-
                     if(user != null && line.contains("</tr>")){
                         List<User> userList =  Database.findAll();
 

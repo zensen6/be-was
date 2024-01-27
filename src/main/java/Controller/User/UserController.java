@@ -105,7 +105,7 @@ public class UserController {
             }else if("list".equals(URI)){
                 if(logined_user == null){
                     body = FileBytes.FilesreadAllBytes(filePath + "/user/login.html", null, true);
-                    response.SetHttpStatus(HttpStatus.REDIRECT);
+                    response.SetRedirectUrl(HttpStatus.REDIRECT, "/user/login.html");
                 }else {
                     body = FileBytes.FilesreadAllBytes(filePath + "/user/list.html", logined_user, true);
                     response.SetHttpStatus(HttpStatus.OK);
