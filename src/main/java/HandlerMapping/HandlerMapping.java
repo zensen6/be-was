@@ -55,6 +55,7 @@ public class HandlerMapping {
     }
 
 
+
     public Response urlParsing(Request request,  Response response) throws IOException {
 
         String URI = request.GetURI();
@@ -74,15 +75,11 @@ public class HandlerMapping {
 
     public Response notHTML(String URI, Response response) throws IOException {
 
-
-
-
-
         String type = URI.split("/")[1];
         String file = URI.split("/")[2];
         response.SetreturnType(Mapping.get(type));
         //response.Setbody(Files.readAllBytes(new File(staticfilePath + "/" + type + "/" + file).toPath()));
-        response.Setbody(FileBytes.FilesreadAllBytes(staticfilePath + "/" + type + "/" + file, null));
+        response.Setbody(FileBytes.FilesreadAllBytes(staticfilePath + "/" + type + "/" + file, null,false));
         response.SetHttpStatus(HttpStatus.OK);
         return response;
     }
@@ -103,7 +100,7 @@ public class HandlerMapping {
         String middleURI = URI.split("/")[1];
         if (URI.equals("/index.html")) {
 
-            body = FileBytes.FilesreadAllBytes(filePath + "/index.html", logined_user);
+            body = FileBytes.FilesreadAllBytes(filePath + "/index.html", logined_user, true);
             response.Setbody(body);
             response.SetHttpStatus(HttpStatus.OK);
 

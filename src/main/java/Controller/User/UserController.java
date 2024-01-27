@@ -56,7 +56,7 @@ public class UserController {
 
         try {
             if ("form.html".equals(URI)) {
-                body = FileBytes.FilesreadAllBytes(filePath + "/user/form.html", logined_user);
+                body = FileBytes.FilesreadAllBytes(filePath + "/user/form.html", logined_user, true);
                 response.SetHttpStatus(HttpStatus.OK);
 
             }else if("login".equals(URI)){
@@ -68,7 +68,7 @@ public class UserController {
                 User user = Database.findUserById(userId);
 
                 if(user != null && password.equals(user.getPassword()) && userId.equals(user.getUserId())){ // 로그인 성공
-                    body = FileBytes.FilesreadAllBytes(filePath + "/index.html", logined_user);
+                    body = FileBytes.FilesreadAllBytes(filePath + "/index.html", logined_user, true);
                     logger.debug("USER::::" + user.getName());
                     response.SetSid();
                     response.SetSidSet();
@@ -79,7 +79,7 @@ public class UserController {
 
 
                 }else{
-                    body = FileBytes.FilesreadAllBytes(userFile + "/login_failed.html", logined_user);
+                    body = FileBytes.FilesreadAllBytes(userFile + "/login_failed.html", logined_user, true);
                     response.SetHttpStatus(HttpStatus.OK);
                 }
 
@@ -98,20 +98,20 @@ public class UserController {
                     User user = new User(userId, password, name, email);
                     Database.addUser(user);
 
-                    body = FileBytes.FilesreadAllBytes(filePath + "/index.html", logined_user);
+                    body = FileBytes.FilesreadAllBytes(filePath + "/index.html", logined_user, true);
 
                     response.SetRedirectUrl(HttpStatus.REDIRECT, "/index.html");
 
                 }else{
 
-                    body = FileBytes.FilesreadAllBytes(userFile + "/signup_failed.html", logined_user);
+                    body = FileBytes.FilesreadAllBytes(userFile + "/signup_failed.html", logined_user, true);
                     response.SetHttpStatus(HttpStatus.OK);
                 }
 
 
 
             }else if("login.html".equals(URI)){
-                body = FileBytes.FilesreadAllBytes(filePath + "/user/login.html", logined_user);
+                body = FileBytes.FilesreadAllBytes(filePath + "/user/login.html", logined_user, true);
                 response.SetHttpStatus(HttpStatus.OK);
 
             }
