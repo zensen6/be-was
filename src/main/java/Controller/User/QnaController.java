@@ -10,6 +10,9 @@ import org.slf4j.LoggerFactory;
 
 public class QnaController {
 
+
+    private SessionManager sessionManager = SessionManager.getInstance();
+
     private String URI;
 
     private Request request;
@@ -32,7 +35,8 @@ public class QnaController {
         User logined_user = null;
 
         if(sid != null){
-            logined_user = Session.getSession(sid);
+            //logined_user = Session.getSession(sid);
+            logined_user = sessionManager.getSession().getSession(sid);
         }
 
         try{

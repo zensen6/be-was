@@ -14,11 +14,11 @@ import org.slf4j.LoggerFactory;
 
 public class UserController {
 
+    private SessionManager sessionManager = SessionManager.getInstance();
     private String URI;
-
     private Request request;
 
-    private Session Session = new Session();
+    //private Session Session = new Session();
 
     private static final Logger logger = LoggerFactory.getLogger(webserver.RequestHandler.class);
     public UserController(String URI, Request request)
@@ -35,7 +35,8 @@ public class UserController {
         User logined_user = null;
 
         if(sid != null){
-            logined_user = Session.getSession(sid);
+            //logined_user = Session.getSession(sid);
+            logined_user = sessionManager.getSession().getSession(sid);
         }
 
         try {
