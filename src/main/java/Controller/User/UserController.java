@@ -1,12 +1,9 @@
 package Controller.User;
 
 import Controller.User.UserLogic.UserLogic;
-import HTTPModel.HttpStatus;
 import HTTPModel.Request;
 import HTTPModel.Response;
-import Functions.FileBytes;
-import HTTPModel.Session;
-import db.Database;
+import SessionManager.SessionManager;
 import model.User;
 
 import org.slf4j.Logger;

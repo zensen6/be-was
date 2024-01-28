@@ -1,6 +1,8 @@
 package Functions;
 
 import db.Database;
+import db.QnaDatabase;
+import model.Qna;
 import model.User;
 
 import java.io.*;
@@ -23,13 +25,14 @@ public class FileBytes {
                 String line;
                 boolean imbed = false;
                 int currentUser = 0;
+                int post = 0;
                 while ((line = reader.readLine()) != null) {
 
                     if(imbed && line.contains("<li><a href=\"user/login.html\" role=\"button\">")){
                         continue;
                     }
                     content.append(line).append(System.lineSeparator());
-                    //System.out.println("line:  " + line);
+                    System.out.println("line:  " + line);
 
 
 
@@ -65,6 +68,31 @@ public class FileBytes {
                     }
 
 
+                    if(line.contains("<ul class=\"list\">")) { // index.html 게시글
+                        List<Qna> qnaLists = QnaDatabase.findAll();
+                        for(Qna qna : qnaLists){
+                            content.append("<li>");
+                            content.append("<div class=\"wrap\">");
+                            content.append("<div class=\"main\">");
+                            content.append("<strong class=\"subject\">");
+                            content.append("<a href=\"./qna/show.html\">").append(qna.getTitle()).append("</a>");
+                            content.append("</strong>");
+                            content.append("<div class=\"auth-info\">");
+                            content.append("<i class=\"icon-add-comment\"></i>");
+                            content.append("<span class=\"time\">").append(qna.getDate()).append("</span>");
+                            content.append("<a href=\"./user/profile.html\" class=\"author\">").append(qna.getUser().getName()).append("</a>");
+                            content.append("</div>");
+                            content.append("<div class=\"reply\" title=\"댓글\">");
+                            content.append("<i class=\"icon-reply\"></i>");
+                            content.append("<span class=\"point\">").append(qna.getId()).append("</span>");
+                            content.append("</div>");
+                            content.append("</div>");
+                            content.append("</div>");
+                            content.append("</li>");
+
+                        }
+
+                    }
 
 
                 }

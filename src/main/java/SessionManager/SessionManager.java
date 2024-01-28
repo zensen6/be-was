@@ -1,4 +1,4 @@
-package Controller.User;
+package SessionManager;
 
 import HTTPModel.Session;
 

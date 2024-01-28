@@ -19,6 +19,15 @@ public class Database {
         return users.get(userId);
     }
 
+    public static User findUserByName(String name){
+        for(User user :  users.values()){
+            if(name.equals(user.getName())){
+                return user;
+            }
+        }
+        return null;
+    }
+
     public static List<User> findAll() {
         return new ArrayList<>(users.values());
     }

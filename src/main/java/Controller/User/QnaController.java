@@ -4,6 +4,7 @@ import Controller.User.QnaLogic.QnaLogic;
 import HTTPModel.Request;
 import HTTPModel.Response;
 import HTTPModel.Session;
+import SessionManager.SessionManager;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,6 +46,8 @@ public class QnaController {
                 response = QnaLogic.qnaShow(request, logined_user);
             }else if("form.html".equals(URI)){
                 response = QnaLogic.qnaForm(request, logined_user);
+            }else if("post".equals(URI)){
+                response = QnaLogic.qnaPost(request, logined_user);
             }
 
         }catch(Exception e){
