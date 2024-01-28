@@ -19,6 +19,7 @@ public class UserLogic {
     private static final String filePath = "./src/main/resources/templates";
 
 
+    public UserLogic(){}
     public static Response userForm(Request request, User logined_user){
 
         byte [] body;
@@ -29,7 +30,7 @@ public class UserLogic {
 
     }
 
-    public static Response userLoginSuccess(Request request, User logined_user){
+    public static Response userLoginPost(Request request, User logined_user){
         byte [] body;
         Response response = new Response();
         String body_str = request.GetBody();

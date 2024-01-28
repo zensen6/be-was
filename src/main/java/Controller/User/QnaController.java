@@ -18,7 +18,6 @@ public class QnaController {
 
     private Request request;
 
-    private HTTPModel.Session Session = new Session();
 
     private static final Logger logger = LoggerFactory.getLogger(webserver.RequestHandler.class);
 

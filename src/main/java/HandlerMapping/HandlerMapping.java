@@ -107,7 +107,7 @@ public class HandlerMapping {
                 response = qnaController.QnaLogic(request);
             }
         }
-        response.SetreturnType("text/html");
+        response.SetreturnType("text/html; charset=UTF-8");
         return response;
     }
 

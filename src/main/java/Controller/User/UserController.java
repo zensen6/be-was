@@ -9,11 +9,27 @@ import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
+
 public class UserController {
 
     private SessionManager sessionManager = SessionManager.getInstance();
     private String URI;
     private Request request;
+
+    private static Map<String, String> URLMapping;
+
+    static {
+        URLMapping = new HashMap<>();
+        URLMapping.put("form.html", "userForm");
+        URLMapping.put("loginPost", "userLoginPost");
+        URLMapping.put("create", "userSignup");
+        URLMapping.put("login.html", "userLogin");
+        URLMapping.put("list", "userList");
+        URLMapping.put("profile.html", "userProfile");
+    }
 
     //private Session Session = new Session();
 
@@ -37,13 +53,24 @@ public class UserController {
         }
 
         try {
+
+            String functionName = URLMapping.get(URI);
+            Class<?> userLogicClass = UserLogic.class;
+            Method method = userLogicClass.getDeclaredMethod(functionName, Request.class, User.class);
+            method.setAccessible(true);
+            UserLogic userLogicInstance = new UserLogic();
+
+            response = (Response) method.invoke(userLogicInstance ,request, logined_user);
+
+            /*
+
             if ("form.html".equals(URI)) {
 
                 response = UserLogic.userForm(request, logined_user);
 
-            }else if("login".equals(URI)){
+            }else if("loginPost".equals(URI)){
 
-                response = UserLogic.userLoginSuccess(request,logined_user);
+                response = UserLogic.userLoginPost(request,logined_user);
 
             }else if(URI.startsWith("create")){
 
@@ -64,6 +91,8 @@ public class UserController {
                 response = UserLogic.userProfile(request, logined_user);
 
             }
+
+             */
 
         }catch(Exception e){
 

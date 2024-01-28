@@ -6,6 +6,7 @@ import model.Qna;
 import model.User;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 public class FileBytes {
@@ -21,7 +22,7 @@ public class FileBytes {
             StringBuilder content = new StringBuilder();
 
 
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(fileURL), "UTF-8"))) {
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(fileURL), StandardCharsets.UTF_8))) {
                 String line;
                 boolean imbed = false;
                 int currentUser = 0;
@@ -96,7 +97,7 @@ public class FileBytes {
 
 
                 }
-                return content.toString().getBytes("UTF-8");
+                return content.toString().getBytes(StandardCharsets.UTF_8);
             } catch (IOException e) {
                 e.printStackTrace();
             }
