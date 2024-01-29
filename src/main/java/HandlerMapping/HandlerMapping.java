@@ -97,14 +97,16 @@ public class HandlerMapping {
             response.SetHttpStatus(HttpStatus.OK);
 
         }else {
-
-
             if(middleURI.equals("user")){
                 UserController userController = new UserController(URI.split("/")[2], request);
                 response = userController.UserLogic(request);
             }else if(middleURI.equals("qna")){
                 QnaController qnaController = new QnaController(URI.split("/")[2], request);
                 response = qnaController.QnaLogic(request);
+            }else{
+                body = FileBytes.FilesreadAllBytes(filePath + "/404.html", null, true);
+                response.Setbody(body);
+                response.SetHttpStatus(HttpStatus.OK);
             }
         }
         response.SetreturnType("text/html; charset=UTF-8");

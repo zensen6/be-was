@@ -1,6 +1,7 @@
 package Controller.User.QnaLogic;
 
 import Functions.FileBytes;
+import Functions.QnaFileBytes;
 import HTTPModel.HttpStatus;
 import HTTPModel.Request;
 import HTTPModel.Response;
@@ -22,8 +23,14 @@ public class QnaLogic {
 
     public static Response qnaShow(Request request, User logined_user){
 
+        String qnaId = request.GetURI().split("/")[2].substring(4).split("\\.")[0];
+        System.out.println("URI : " + qnaId);
+
+
+
         byte [] body;
-        body = FileBytes.FilesreadAllBytes(qnaFile + "/show.html", logined_user, true);
+        //body = FileBytes.FilesreadAllBytes(qnaFile + "/show.html", logined_user, true);
+        body = QnaFileBytes.FilesreadAllBytes(qnaFile + "/show.html", qnaId, logined_user);
         Response response = new Response(HttpStatus.OK);
         response.Setbody(body);
         return response;

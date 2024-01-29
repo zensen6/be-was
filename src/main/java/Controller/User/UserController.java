@@ -1,6 +1,8 @@
 package Controller.User;
 
 import Controller.User.UserLogic.UserLogic;
+import Functions.FileBytes;
+import HTTPModel.HttpStatus;
 import HTTPModel.Request;
 import HTTPModel.Response;
 import SessionManager.SessionManager;
@@ -18,6 +20,8 @@ public class UserController {
     private SessionManager sessionManager = SessionManager.getInstance();
     private String URI;
     private Request request;
+
+    private static final String filePath = "./src/main/resources/templates";
 
     private static Map<String, String> URLMapping;
 
@@ -43,59 +47,34 @@ public class UserController {
 
     public Response UserLogic(Request request) {
 
+        byte[] body;
         Response response = new Response();
         String sid = request.GetSid();
         User logined_user = null;
 
         if(sid != null){
-            //logined_user = Session.getSession(sid);
             logined_user = sessionManager.getSession().getSession(sid);
         }
 
         try {
 
             String functionName = URLMapping.get(URI);
-            Class<?> userLogicClass = UserLogic.class;
-            Method method = userLogicClass.getDeclaredMethod(functionName, Request.class, User.class);
-            method.setAccessible(true);
-            UserLogic userLogicInstance = new UserLogic();
+            if(functionName == null){
+                body = FileBytes.FilesreadAllBytes(filePath + "/404.html", null, true);
+                response.Setbody(body);
+                response.SetHttpStatus(HttpStatus.OK);
 
-            response = (Response) method.invoke(userLogicInstance ,request, logined_user);
+            }else {
+                Class<?> userLogicClass = UserLogic.class;
+                Method method = userLogicClass.getDeclaredMethod(functionName, Request.class, User.class);
+                method.setAccessible(true);
+                UserLogic userLogicInstance = new UserLogic();
 
-            /*
-
-            if ("form.html".equals(URI)) {
-
-                response = UserLogic.userForm(request, logined_user);
-
-            }else if("loginPost".equals(URI)){
-
-                response = UserLogic.userLoginPost(request,logined_user);
-
-            }else if(URI.startsWith("create")){
-
-                response = UserLogic.userSignup(request, logined_user);
-
-
-            }else if("login.html".equals(URI)){
-
-                response = UserLogic.userLogin(request, logined_user);
-
-
-            }else if("list".equals(URI)){
-
-                response = UserLogic.userList(request, logined_user);
-
-            }else if("profile.html".equals(URI)){
-
-                response = UserLogic.userProfile(request, logined_user);
-
+                response = (Response) method.invoke(userLogicInstance, request, logined_user);
             }
 
-             */
-
         }catch(Exception e){
-
+            logger.debug(String.valueOf(e));
         }
         return response;
     }

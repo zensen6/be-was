@@ -48,9 +48,6 @@ public class UserLogic {
             Session.addSession(response.getSid(),user);
             response.SetRedirectUrl(HttpStatus.REDIRECT, "/index.html");
 
-            logger.debug("login SUCCEESSSS: ");
-
-
         }else{
             body = FileBytes.FilesreadAllBytes(userFile + "/login_failed.html", logined_user, true);
             response.SetHttpStatus(HttpStatus.OK);

@@ -1,6 +1,8 @@
 package Controller.User;
 
 import Controller.User.QnaLogic.QnaLogic;
+import Functions.FileBytes;
+import HTTPModel.HttpStatus;
 import HTTPModel.Request;
 import HTTPModel.Response;
 import HTTPModel.Session;
@@ -16,6 +18,7 @@ public class QnaController {
 
     private String URI;
 
+    private static final String filePath = "./src/main/resources/templates";
     private Request request;
 
 
@@ -28,6 +31,7 @@ public class QnaController {
     }
 
     public Response QnaLogic(Request request){
+        byte[] body;
 
         Response response = new Response();
         String sid = request.GetSid();
@@ -35,22 +39,24 @@ public class QnaController {
         User logined_user = null;
 
         if(sid != null){
-            //logined_user = Session.getSession(sid);
             logined_user = sessionManager.getSession().getSession(sid);
         }
 
         try{
-
-            if("show.html".equals(URI)){
+            if(URI.contains("show")){
                 response = QnaLogic.qnaShow(request, logined_user);
             }else if("form.html".equals(URI)){
                 response = QnaLogic.qnaForm(request, logined_user);
             }else if("post".equals(URI)){
                 response = QnaLogic.qnaPost(request, logined_user);
+            }else{
+                body = FileBytes.FilesreadAllBytes(filePath + "/404.html", null, true);
+                response.Setbody(body);
+                response.SetHttpStatus(HttpStatus.OK);
             }
 
         }catch(Exception e){
-
+            logger.debug(String.valueOf(e));
 
         }
         return response;

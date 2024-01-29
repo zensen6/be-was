@@ -44,7 +44,7 @@ public class FileBytes {
 
 
                     content.append(line).append(System.lineSeparator());
-                    System.out.println("line:  " + line);
+
 
 
 
@@ -61,7 +61,6 @@ public class FileBytes {
                         List<User> userList =  Database.findAll();
 
                         currentUser++;
-                        System.out.println(currentUser);
                         if (currentUser == 3) {
 
                             for(User signedUser : userList) {
@@ -87,7 +86,7 @@ public class FileBytes {
                             content.append("<div class=\"wrap\">");
                             content.append("<div class=\"main\">");
                             content.append("<strong class=\"subject\">");
-                            content.append("<a href=\"./qna/show.html\">").append(qna.getTitle()).append("</a>");
+                            content.append("<a href=\"./qna/show").append(qna.getUser().getUserId()).append(".html\">").append(qna.getTitle()).append("</a>");
                             content.append("</strong>");
                             content.append("<div class=\"auth-info\">");
                             content.append("<i class=\"icon-add-comment\"></i>");
