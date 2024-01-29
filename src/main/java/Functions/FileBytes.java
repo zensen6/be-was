@@ -32,6 +32,17 @@ public class FileBytes {
                     if(imbed && line.contains("<li><a href=\"user/login.html\" role=\"button\">")){
                         continue;
                     }
+
+                    if(user != null && line.contains("<h4 class=\"media-heading\">")){
+                        content.append("<h4 class=\"media-heading\">").append(user.getName()).append("</h4>");
+                        continue;
+                    }
+                    if(user != null && line.contains("<a href=\"#\" class=\"btn btn-xs btn-default\"><span class=\"glyphicon glyphicon-envelope\"></span>&nbsp;")){
+                        content.append("<a href=\"#\" class=\"btn btn-xs btn-default\"><span class=\"glyphicon glyphicon-envelope\"></span>&nbsp;").append(user.getEmail()).append("</a>");
+                        continue;
+                    }
+
+
                     content.append(line).append(System.lineSeparator());
                     System.out.println("line:  " + line);
 
